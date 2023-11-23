@@ -1,5 +1,5 @@
 <template>
-    <v-app v-if="displaying">
+    <v-app v-if="displaying" style="background: transparent;">
         <div id="hud" style="position: absolute; top: 0; left: 0; display: flex; align-items: center; flex-direction: column;">
             <div v-for="(status, id) in statusData">
                 <div v-if="status.value > 0">
@@ -42,6 +42,10 @@
                     </v-card-title>
 
                     <v-card-text style="height: 84%; overflow-y: scroll;">
+                        <div v-if="!pageLoaded" style="display: flex; justify-content: center; align-items: center; height: 40vh;">
+                            <v-progress-circular size="100" indeterminate color="white"></v-progress-circular>
+                        </div>
+
                         <div style="display: grid; grid-template-columns: 1fr 1fr; grid-gap: 30px; grid-area: auto; place-items: center;">
                             <div>
                                 <v-card width="300" color="accent" height="230">
@@ -137,23 +141,13 @@
         name: 'App',
 
         data: () => ({
-            displaying: true, 
-            displaySettings: true,
+            displaying: false, 
+            displaySettings: false,
+            pageLoaded: false,
+
             isTalking: false, 
 
-            colors: [
-                { label: 'Grön', value: 'green' },
-                { label: 'Röd', value: 'red' },
-                { label: 'Blå', value: 'blue' },
-                { label: 'Gul', value: 'yellow' },
-                { label: 'Lila', value: 'purple' },
-                { label: 'Orange', value: 'orange' },
-                { label: 'Rosa', value: 'pink' },
-                { label: 'Brun', value: 'brown' },
-                { label: 'Grå', value: 'grey' },
-                { label: 'Svart', value: 'black' },
-                { label: 'Vit', value: 'white' },
-            ], 
+            colors: [], 
 
             settings: {
                 position: {
@@ -188,44 +182,55 @@
                 },
             }, 
 
-            statusData: {
-                ['health']: {
-                    value: 100,
-                },
-
-                ['armor']: {
-                    value: 100,
-                },
-
-                ['hunger']: {
-                    value: 100,
-                },
-
-                ['thirst']: {
-                    value: 100,
-                },
-
-                ['voice']: {
-                    value: 100,
-                },
-            }
+            statusData: {}
         }), 
 
+        methods: {
+            sendMessage(event, data, callback) {
+                fetch(`https://lowkey_status/${event}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8',
+                    },
+                    body: JSON.stringify(data ? data : [])
+                }).then(resp => resp.json()).then(resp => callback(resp));
+            }, 
+        }, 
+
         mounted() {
-            // window.addEventListener('message', (event) => {
-            //     const { type, data } = event.data;
+            window.addEventListener('message', (event) => {
+                const { type, data } = event.data;
 
-            //     if (type === 'updateStatus') {
-            //         this.statusData = data;
+                if (type === 'updateStatus') {
+                    this.statusData = data;
 
-            //         this.isTalking = data.voice.isTalking
-            //         this.displaying = true;
-            //     } 
+                    this.isTalking = data.voice.isTalking
+                    this.displaying = true;
+                } 
                 
-            //     if (type == 'hide') {
-            //         this.displaying = false;
-            //     }
-            // });
+                if (type == 'hide') {
+                    this.displaying = false;
+                }
+
+                if (type == 'openSettings') {
+                    this.displaySettings = true;
+
+                    let newPromise = new Promise((resolve) => {
+                        this.sendMessage('fetchSettings', null, (settings) => {
+                            resolve(settings)
+                        })
+                    })
+
+                    newPromise.then((results) => {
+                        if (!results.success) return; 
+
+                        this.settings = results.data.settings;
+                        this.colors = results.data.colors;
+
+                        this.pageLoaded = true; 
+                    })
+                }
+            });
         },
 
         watch: {
