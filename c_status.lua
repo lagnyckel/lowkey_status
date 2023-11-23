@@ -1,9 +1,29 @@
 Status = {
     displaying = true; 
+    settings = {}; 
 }; 
 
 Citizen.CreateThread(function()
     Citizen.Wait(1500); 
+
+    local self = Status;
+
+    self.settings = Settings:TriggerCallback({
+        eventName = 'lowkey_status:fetchSettings', 
+        args = {}
+    })
+
+    if not self.settings.success then 
+        print('Failed to fetch settings.')
+        return 
+    end
+
+    SendNUIMessage({
+        type = 'setup', 
+        data = {
+            settings = self.settings.data
+        }
+    })
 
     while true do 
         if Status.displaying then 
@@ -31,7 +51,7 @@ Citizen.CreateThread(function()
             
                             thirst = {
                                 value = thirst.val / 10000 -1,
-                            }
+                            }, 
                         }
                     })
                 end)

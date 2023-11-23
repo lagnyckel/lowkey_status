@@ -1,5 +1,18 @@
 Config = {}; 
 
+Config.Debug = true;
+
+Config.DefaultSettings = {
+    position = {
+        x = 0,
+        y = 0,
+    }, 
+
+    layout = 'column', 
+    background = 'no-bakground', 
+    statusColor = 'green',
+}
+
 Config.Colors = {
     { label = 'Grön', value = 'green' },
     { label = 'Röd', value = 'red' },

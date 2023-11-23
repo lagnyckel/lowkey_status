@@ -28,6 +28,23 @@ RegisterNUICallback('fetchSettings', function(_, callback)
     })
 end)
 
+RegisterNUICallback('saveSettings', function(data, callback)
+    local settings = Settings:TriggerCallback({
+        eventName = 'lowkey_status:saveSettings', 
+        args = {
+            settings = data
+        }
+    })
+
+    if not settings.success then 
+        callback({
+            success = false, 
+            message = 'Failed to save settings.'
+        }) 
+    end
+
+end)
+
 function Settings:TriggerCallback(data)
     local p = promise:new(); 
 

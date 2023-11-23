@@ -21,7 +21,7 @@
                         <span>Inställningar</span>
 
                         <div>
-                            <v-btn icon color="primary" :elevation="0" @click="displaySettings = false">
+                            <v-btn icon color="primary" :elevation="0" @click="saveSettings()">
                                 <v-tooltip
                                     activator="parent"
                                     location="bottom"
@@ -145,19 +145,21 @@
             displaySettings: false,
             pageLoaded: false,
 
+            shouldUpdate: true,
+
             isTalking: false, 
 
             colors: [], 
 
             settings: {
-                position: {
-                    x: 0,
-                    y: 0,
-                }, 
+                // position: {
+                //     x: 0,
+                //     y: 0,
+                // }, 
 
-                layout: 'column', 
-                background: 'no-bakground', 
-                statusColor: 'green',
+                // layout: 'column', 
+                // background: 'no-bakground', 
+                // statusColor: 'green',
             },
 
             icons: {
@@ -195,11 +197,25 @@
                     body: JSON.stringify(data ? data : [])
                 }).then(resp => resp.json()).then(resp => callback(resp));
             }, 
+
+            saveSettings() {
+                this.sendMessage('saveSettings', this.settings, (resp) => {
+                    if (!resp.success) return; 
+
+                    this.displaySettings = false;
+                })
+            }
         }, 
 
         mounted() {
             window.addEventListener('message', (event) => {
                 const { type, data } = event.data;
+
+                if (type == 'setup') {
+                    this.displaying = true;
+                    
+                    this.settings = data.settings;
+                }
 
                 if (type === 'updateStatus') {
                     this.statusData = data;
@@ -240,8 +256,6 @@
 
             settings: {
                 handler: function (val) {
-                    console.log(JSON.stringify(val))
-
                     if (val.position) {
                         document.getElementById('hud').style.top = `${val.position.y}%`;
                         document.getElementById('hud').style.left = `${val.position.x}%`;
