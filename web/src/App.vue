@@ -1,9 +1,9 @@
 <template>
-    <v-app v-if="displaying" style="background: black;">
+    <v-app v-if="displaying">
         <div id="hud" style="position: absolute; top: 0; left: 0; display: flex; align-items: center; flex-direction: column;">
             <div v-for="(status, id) in statusData">
                 <div v-if="status.value > 0">
-                    <v-progress-circular :model-value="status.value" size="40" class="ma-2" :color="status.value <= 20 ? 'red' : icons[id].color">
+                    <v-progress-circular :model-value="status.value" size="40" class="ma-2" :color="status.value <= 20 ? 'red' : settings.statusColor">
                         <template #default="{ value }">
                             <div>
                                 <v-icon style="font-size: 17px;">{{ icons[id].icon }}</v-icon>
@@ -16,9 +16,30 @@
 
         <div v-if="displaySettings">
             <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
-                <v-card width="670" height="500" color="primary">
-                    <v-card-title>Inställningar</v-card-title>
-                    <v-card-subtitle>Ändra inställningar för din status hud</v-card-subtitle>
+                <v-card width="700" height="500" color="primary">
+                    <v-card-title style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Inställningar</span>
+
+                        <div>
+                            <v-btn icon color="primary" :elevation="0" @click="displaySettings = false">
+                                <v-tooltip
+                                    activator="parent"
+                                    location="bottom"
+                                >Spara</v-tooltip>
+
+                                <v-icon>mdi-content-save-all</v-icon>
+                            </v-btn>
+
+                            <v-btn icon color="primary" :elevation="0" @click="displaySettings = false">
+                                <v-tooltip
+                                    activator="parent"
+                                    location="bottom"
+                                >Stäng</v-tooltip>
+
+                                <v-icon>mdi-close</v-icon>
+                            </v-btn>
+                        </div>
+                    </v-card-title>
 
                     <v-card-text style="height: 84%; overflow-y: scroll;">
                         <div style="display: grid; grid-template-columns: 1fr 1fr; grid-gap: 30px; grid-area: auto; place-items: center;">
@@ -72,16 +93,34 @@
 
                                     <v-card-text style="display: flex; flex-direction: column;">
                                         <v-checkbox
-                                            v-model="settings.layout"
-                                            label="Vertikal"
-                                            value="column"
+                                            v-model="settings.background"
+                                            label="Med bakground"
+                                            value="bakground"
                                         ></v-checkbox>
 
                                         <v-checkbox
-                                            v-model="settings.layout"
-                                            label="Horisontell"
-                                            value="row"
+                                            v-model="settings.background"
+                                            label="Utan bakground"
+                                            value="no-bakground"
                                         ></v-checkbox>
+                                    </v-card-text>
+                                </v-card>
+                            </div>
+
+                            <div>
+                                <v-card width="300" height="230" color="accent">
+                                    <v-card-title>Färger</v-card-title>
+
+                                    <v-divider></v-divider>
+
+                                    <v-card-text style="display: flex; flex-direction: column;">
+                                        <v-autocomplete
+                                            label="Välj färg"
+                                            v-model="settings.statusColor"
+                                            item-title="label"
+                                            item-value="value"
+                                            :items="colors"
+                                        ></v-autocomplete>
                                     </v-card-text>
                                 </v-card>
                             </div>
@@ -102,39 +141,50 @@
             displaySettings: true,
             isTalking: false, 
 
+            colors: [
+                { label: 'Grön', value: 'green' },
+                { label: 'Röd', value: 'red' },
+                { label: 'Blå', value: 'blue' },
+                { label: 'Gul', value: 'yellow' },
+                { label: 'Lila', value: 'purple' },
+                { label: 'Orange', value: 'orange' },
+                { label: 'Rosa', value: 'pink' },
+                { label: 'Brun', value: 'brown' },
+                { label: 'Grå', value: 'grey' },
+                { label: 'Svart', value: 'black' },
+                { label: 'Vit', value: 'white' },
+            ], 
+
             settings: {
                 position: {
                     x: 0,
                     y: 0,
                 }, 
 
-                layout: 'column'
+                layout: 'column', 
+                background: 'no-bakground', 
+                statusColor: 'green',
             },
 
             icons: {
                 ['health']: {
                     icon: 'mdi-heart',
-                    color: 'white', 
                 },
 
                 ['armor']: {
                     icon: 'mdi-shield',
-                    color: 'white',
                 },
 
                 ['hunger']: {
                     icon: 'mdi-food-apple',
-                    color: 'white',
                 },
 
                 ['thirst']: {
                     icon: 'mdi-cup-water',
-                    color: 'white',
                 },
 
                 ['voice']: {
                     icon: 'mdi-microphone-off',
-                    color: 'white',
                 },
             }, 
 
@@ -190,14 +240,19 @@
                     if (val.position) {
                         document.getElementById('hud').style.top = `${val.position.y}%`;
                         document.getElementById('hud').style.left = `${val.position.x}%`;
-
-                        console.log('Position changed');
                     }
 
                     if (val.layout) {
                         document.getElementById('hud').style.flexDirection = val.layout;
+                    }
 
-                        console.log('Layout changed');
+                    if (val.background) {
+                        if (val.background === 'bakground') {
+                            document.getElementById('hud').style.background = 'rgba(0, 0, 0, 0.5)';
+                            document.getElementById('hud').style.borderRadius = '50px';
+                        } else {
+                            document.getElementById('hud').style.background = 'none';
+                        }
                     }
                 }, 
 
