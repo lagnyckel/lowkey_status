@@ -15,6 +15,8 @@ Citizen.CreateThread(function()
         args = {}
     })
 
+    DisplayRadar(false)
+
     Citizen.Wait(1500); 
 
     SendNUIMessage({
