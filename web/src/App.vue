@@ -20,8 +20,8 @@
                     <v-card-title>Inställningar</v-card-title>
                     <v-card-subtitle>Ändra inställningar för din status hud</v-card-subtitle>
 
-                    <v-card-text>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; grid-gap: 30px; grid-area: auto; place-items: center;">
+                    <v-card-text style="height: 84%; overflow-y: scroll;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; grid-gap: 30px; grid-area: auto; place-items: center;">
                             <div>
                                 <v-card width="300" color="accent" height="230">
                                     <v-card-title>Position</v-card-title>
@@ -38,6 +38,28 @@
                                             <div class="text-caption">Y</div>
                                             <v-slider v-model="settings.position.y" :max="100" :min="0" step="1" thumb-label></v-slider>
                                         </div>
+                                    </v-card-text>
+                                </v-card>
+                            </div>
+
+                            <div>
+                                <v-card width="300" height="230" color="accent">
+                                    <v-card-title>Layout</v-card-title>
+
+                                    <v-divider></v-divider>
+
+                                    <v-card-text style="display: flex; flex-direction: column;">
+                                        <v-checkbox
+                                            v-model="settings.layout"
+                                            label="Vertikal"
+                                            value="column"
+                                        ></v-checkbox>
+
+                                        <v-checkbox
+                                            v-model="settings.layout"
+                                            label="Horisontell"
+                                            value="row"
+                                        ></v-checkbox>
                                     </v-card-text>
                                 </v-card>
                             </div>
