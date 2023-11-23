@@ -66,7 +66,7 @@
 
                             <div>
                                 <v-card width="300" height="230" color="accent">
-                                    <v-card-title>Layout</v-card-title>
+                                    <v-card-title>Bakgrund</v-card-title>
 
                                     <v-divider></v-divider>
 
