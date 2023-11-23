@@ -30,7 +30,7 @@
                                 <v-icon>mdi-content-save-all</v-icon>
                             </v-btn>
 
-                            <v-btn icon color="primary" :elevation="0" @click="displaySettings = false">
+                            <v-btn icon color="primary" :elevation="0" @click="closeApp()">
                                 <v-tooltip
                                     activator="parent"
                                     location="bottom"
@@ -141,7 +141,7 @@
         name: 'App',
 
         data: () => ({
-            displaying: false, 
+            displaying: true, 
             displaySettings: false,
             pageLoaded: false,
 
@@ -198,11 +198,17 @@
                 }).then(resp => resp.json()).then(resp => callback(resp));
             }, 
 
+            closeApp() {
+                this.sendMessage('closeApp', null, (resp) => {
+                    this.displaySettings = false;
+                })
+            }, 
+
             saveSettings() {
                 this.sendMessage('saveSettings', this.settings, (resp) => {
                     if (!resp.success) return; 
 
-                    this.displaySettings = false;
+                    this.closeApp(); 
                 })
             }
         }, 
@@ -211,9 +217,7 @@
             window.addEventListener('message', (event) => {
                 const { type, data } = event.data;
 
-                if (type == 'setup') {
-                    this.displaying = true;
-                    
+                if (type == 'init') {
                     this.settings = data.settings;
                 }
 
@@ -246,6 +250,20 @@
                         this.pageLoaded = true; 
                     })
                 }
+            });
+
+            document.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('hud').style.flexDirection = this.settings.layout;
+
+                if (this.settings.background === 'bakground') {
+                    document.getElementById('hud').style.background = 'rgba(0, 0, 0, 0.5)';
+                    document.getElementById('hud').style.borderRadius = '50px';
+                } else {
+                    document.getElementById('hud').style.background = 'none';
+                }
+
+                document.getElementById('hud').style.top = `${this.settings.position.y}%`;
+                document.getElementById('hud').style.left = `${this.settings.position.x}%`;
             });
         },
 

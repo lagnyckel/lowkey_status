@@ -4,7 +4,9 @@ Status = {
 }; 
 
 Citizen.CreateThread(function()
-    Citizen.Wait(1500); 
+    while not ESX.IsPlayerLoaded() do 
+        Citizen.Wait(500)
+    end
 
     local self = Status;
 
@@ -13,13 +15,10 @@ Citizen.CreateThread(function()
         args = {}
     })
 
-    if not self.settings.success then 
-        print('Failed to fetch settings.')
-        return 
-    end
+    Citizen.Wait(1500); 
 
     SendNUIMessage({
-        type = 'setup', 
+        type = 'init', 
         data = {
             settings = self.settings.data
         }

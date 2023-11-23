@@ -43,6 +43,19 @@ RegisterNUICallback('saveSettings', function(data, callback)
         }) 
     end
 
+    callback({
+        success = true, 
+        message = 'Successfully saved settings.'
+    })
+end)
+
+RegisterNUICallback('closeApp', function(_, callback)
+    SetNuiFocus(false, false); 
+
+    callback({
+        success = true, 
+        message = 'Successfully closed app.'
+    })
 end)
 
 function Settings:TriggerCallback(data)
