@@ -1,6 +1,6 @@
-Settings = {}; 
-
 ESX = nil
+
+Settings = {}; 
 
 TriggerEvent('esx:getSharedObject', function(obj) 
     ESX = obj 

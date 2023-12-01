@@ -13,9 +13,9 @@ function Status:Init()
         if not player then return end; 
 
         local results = MySQL.Sync.fetchAll([[
-            SELECT settings FROM users WHERE identifier = @identifier
+            SELECT settings FROM characters WHERE socialnumber = @socialnumber
         ]], {
-            ['@identifier'] = player.identifier
+            ['@socialnumber'] = player.socialnumber
         })
 
         if not results[1] or results[1].settings == '[]' then 
@@ -36,9 +36,9 @@ function Status:Init()
         if not player then return end; 
 
         local affectedRows = MySQL.Sync.execute([[
-            UPDATE users SET settings = @settings WHERE identifier = @identifier
+            UPDATE characters SET settings = @settings WHERE socialnumber = @socialnumber
         ]], {
-            ['@identifier'] = player.identifier, 
+            ['@socialnumber'] = player.socialnumber, 
             ['@settings'] = json.encode(data.settings)
         })
 
@@ -60,13 +60,13 @@ function Status:CreateSettings(player)
     end
 
     local affectedRows = MySQL.Sync.execute([[
-        UPDATE users SET settings = @settings WHERE identifier = @identifier
+        UPDATE characters SET settings = @settings WHERE socialnumber = @socialnumber
     ]], {
-        ['@identifier'] = player.identifier, 
+        ['@socialnumber'] = player.socialnumber, 
         ['@settings'] = json.encode(defaultSettings)
     })
 
-    self:debugPrint(('[lowkey_status] Created settings for %s'):format(player.identifier))
+    self:debugPrint(('[lowkey_status] Created settings for %s'):format(player.socialnumber))
 
     return defaultSettings
 end
