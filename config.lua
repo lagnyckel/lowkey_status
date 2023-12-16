@@ -9,7 +9,7 @@ Config.DefaultSettings = {
     }, 
 
     layout = 'column', 
-    background = 'no-bakground', 
+    background = 'no-background', 
     statusColor = 'green',
 }
 

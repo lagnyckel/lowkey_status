@@ -1,14 +1,10 @@
 Settings = {}; 
 
-ESX = nil
-
-TriggerEvent('esx:getSharedObject', function(obj) 
-    ESX = obj 
-end)
+ESX = exports.es_extended:getSharedObject();
 
 RegisterNUICallback('fetchSettings', function(_, callback)
     local settings = Settings:TriggerCallback({
-        eventName = 'lowkey_status:fetchSettings', 
+        eventName = 'lowkey_statusui:fetchSettings', 
         args = {}
     })
 
@@ -30,7 +26,7 @@ end)
 
 RegisterNUICallback('saveSettings', function(data, callback)
     local settings = Settings:TriggerCallback({
-        eventName = 'lowkey_status:saveSettings', 
+        eventName = 'lowkey_statusui:saveSettings', 
         args = {
             settings = data
         }

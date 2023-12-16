@@ -11,7 +11,7 @@ Citizen.CreateThread(function()
     local self = Status;
 
     self.settings = Settings:TriggerCallback({
-        eventName = 'lowkey_status:fetchSettings', 
+        eventName = 'lowkey_statusui:fetchSettings', 
         args = {}
     })
 
@@ -28,8 +28,11 @@ Citizen.CreateThread(function()
 
     while true do 
         if Status.displaying then 
-            TriggerEvent("status:getStatus", "thirst", function(thirst)
-                TriggerEvent("status:getStatus", "hunger", function(hunger)
+            TriggerEvent('esx_status:getStatus', 'hunger', function(hunger)
+                TriggerEvent('esx_status:getStatus', 'thirst', function(thirst)
+                    local _hunger = hunger.getPercent(); 
+                    local _thirst = thirst.getPercent();
+
                     SendNUIMessage({
                         type = 'updateStatus',
                         data = {
@@ -37,21 +40,21 @@ Citizen.CreateThread(function()
                                 value = 100,
                                 isTalking = MumbleIsPlayerTalking(PlayerId()),
                             }, 
-
+                    
                             health = {
                                 value = GetEntityHealth(PlayerPedId()) / 2 -1,
                             }, 
-            
+                    
                             armor = {
                                 value = GetPedArmour(PlayerPedId()) -1,
                             },
-            
+                    
                             hunger = {
-                                value = hunger.val / 10000 -1,
+                                value = _hunger,
                             },
-            
+                    
                             thirst = {
-                                value = thirst.val / 10000 -1,
+                                value = _thirst,
                             }, 
                         }
                     })
@@ -81,4 +84,10 @@ end)
 
 exports('display', function(...)
     Status:display(...)
+end)
+
+RegisterCommand('loadcharacter', function()
+    print('loadcharacter')
+
+    TriggerServerEvent('es_extended:loadCharacter', '1993-04-12-9941')
 end)

@@ -1,13 +1,9 @@
-ESX = nil
-
 Status = {}; 
 
-TriggerEvent('esx:getSharedObject', function(obj) 
-    ESX = obj 
-end)
+ESX = exports.es_extended:getSharedObject();
 
 function Status:Init()
-    ESX.RegisterServerCallback('lowkey_status:fetchSettings', function(source, callback)
+    ESX.RegisterServerCallback('lowkey_statusui:fetchSettings', function(source, callback)
         local player = ESX.GetPlayerFromId(source); 
 
         if not player then return end; 
@@ -15,7 +11,7 @@ function Status:Init()
         local results = MySQL.Sync.fetchAll([[
             SELECT settings FROM users WHERE identifier = @identifier
         ]], {
-            ['@identifier'] = player.identifier
+            ['@socialnumber'] = player.identifier
         })
 
         if not results[1] or results[1].settings == '[]' then 
@@ -30,7 +26,7 @@ function Status:Init()
         callback({ success = true, data = settings })
     end)
 
-    ESX.RegisterServerCallback('lowkey_status:saveSettings', function(source, callback, data)
+    ESX.RegisterServerCallback('lowkey_statusui:saveSettings', function(source, callback, data)
         local player = ESX.GetPlayerFromId(source); 
 
         if not player then return end; 
@@ -66,7 +62,7 @@ function Status:CreateSettings(player)
         ['@settings'] = json.encode(defaultSettings)
     })
 
-    self:debugPrint(('[lowkey_status] Created settings for %s'):format(player.identifier))
+    self:debugPrint(('[status] Created settings for %s'):format(player.identifier))
 
     return defaultSettings
 end

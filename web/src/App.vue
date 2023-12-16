@@ -105,7 +105,7 @@
                                         <v-checkbox
                                             v-model="settings.background"
                                             label="Utan bakground"
-                                            value="no-bakground"
+                                            value="no-background"
                                         ></v-checkbox>
                                     </v-card-text>
                                 </v-card>
@@ -151,16 +151,7 @@
 
             colors: [], 
 
-            settings: {
-                // position: {
-                //     x: 0,
-                //     y: 0,
-                // }, 
-
-                // layout: 'column', 
-                // background: 'no-bakground', 
-                // statusColor: 'green',
-            },
+            settings: {},
 
             icons: {
                 ['health']: {
@@ -189,7 +180,7 @@
 
         methods: {
             sendMessage(event, data, callback) {
-                fetch(`https://lowkey_status/${event}`, {
+                fetch(`https://lowkey_statusui/${event}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json; charset=UTF-8',
