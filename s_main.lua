@@ -58,7 +58,7 @@ function Status:CreateSettings(player)
     local affectedRows = MySQL.Sync.execute([[
         UPDATE users SET settings = @settings WHERE identifier = @identifier
     ]], {
-        ['@identifier'] = player.identifier, 
+        ['@socialnumber'] = player.identifier, 
         ['@settings'] = json.encode(defaultSettings)
     })
 
