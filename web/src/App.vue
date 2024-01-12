@@ -98,13 +98,13 @@
                                     <v-card-text style="display: flex; flex-direction: column;">
                                         <v-checkbox
                                             v-model="settings.background"
-                                            label="Med bakground"
-                                            value="bakground"
+                                            label="Med Bakgrund"
+                                            value="Bakgrund"
                                         ></v-checkbox>
 
                                         <v-checkbox
                                             v-model="settings.background"
-                                            label="Utan bakground"
+                                            label="Utan Bakgrund"
                                             value="no-background"
                                         ></v-checkbox>
                                     </v-card-text>
