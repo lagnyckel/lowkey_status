@@ -11,7 +11,7 @@ function Status:Init()
         local results = MySQL.Sync.fetchAll([[
             SELECT settings FROM users WHERE identifier = @identifier
         ]], {
-            ['@socialnumber'] = player.identifier
+            ['@identifier'] = player.identifier
         })
 
         if not results[1] or results[1].settings == '[]' then 

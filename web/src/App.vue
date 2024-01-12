@@ -209,6 +209,8 @@
                 const { type, data } = event.data;
 
                 if (type == 'init') {
+                    console.log(JSON.stringify(data.settings))
+
                     this.settings = data.settings;
                 }
 
